@@ -1,0 +1,691 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="TASModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Games">
+          <Key>
+            <PropertyRef Name="GameID" />
+          </Key>
+          <Property Name="GameID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="HomeClubName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="VisitorName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="GameDate" Type="smalldatetime" Nullable="false" />
+          <Property Name="GameLocation" Type="int" Nullable="false" />
+          <Property Name="GameStatus" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="GameStatuses">
+          <Key>
+            <PropertyRef Name="StatusID" />
+          </Key>
+          <Property Name="StatusID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StatusName" Type="varchar" MaxLength="30" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Locations">
+          <Key>
+            <PropertyRef Name="LocationID" />
+          </Key>
+          <Property Name="LocationID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LocationName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="LocationStatus" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Roles">
+          <Key>
+            <PropertyRef Name="RoleID" />
+          </Key>
+          <Property Name="RoleID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RoleName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Status" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SaleReportDetails">
+          <Key>
+            <PropertyRef Name="RowID" />
+          </Key>
+          <Property Name="RowID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ReportID" Type="int" Nullable="false" />
+          <Property Name="TerminalID" Type="int" Nullable="false" />
+          <Property Name="TicketID" Type="int" Nullable="false" />
+          <Property Name="TicketQty" Type="int" Nullable="false" />
+          <Property Name="TicketAmount" Type="money" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SaleReports">
+          <Key>
+            <PropertyRef Name="ReportID" />
+          </Key>
+          <Property Name="ReportID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ReportDate" Type="smalldatetime" Nullable="false" />
+          <Property Name="GameID" Type="int" Nullable="false" />
+          <Property Name="Status" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SaleReportStatuses">
+          <Key>
+            <PropertyRef Name="SaleReportStatusID" />
+          </Key>
+          <Property Name="SaleReportStatusID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StatusName" Type="varchar" MaxLength="30" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Salesmen">
+          <Key>
+            <PropertyRef Name="SalesmanID" />
+          </Key>
+          <Property Name="SalesmanID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserName" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="Password" Type="varchar" MaxLength="90" Nullable="false" />
+          <Property Name="FirstName" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="LastName" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="AssignedTerminal" Type="int" Nullable="false" />
+          <Property Name="Status" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Terminals">
+          <Key>
+            <PropertyRef Name="TerminalID" />
+          </Key>
+          <Property Name="TerminalID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UUID" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="LocationID" Type="int" Nullable="false" />
+          <Property Name="Status" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Tickets">
+          <Key>
+            <PropertyRef Name="TicketID" />
+          </Key>
+          <Property Name="TicketID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TicketLocation" Type="int" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="Value" Type="money" Nullable="false" />
+          <Property Name="Status" Type="bit" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Games_GameStatuses">
+          <End Role="GameStatuses" Type="Self.GameStatuses" Multiplicity="1" />
+          <End Role="Games" Type="Self.Games" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GameStatuses">
+              <PropertyRef Name="StatusID" />
+            </Principal>
+            <Dependent Role="Games">
+              <PropertyRef Name="GameStatus" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Games_Locations">
+          <End Role="Locations" Type="Self.Locations" Multiplicity="1" />
+          <End Role="Games" Type="Self.Games" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Locations">
+              <PropertyRef Name="LocationID" />
+            </Principal>
+            <Dependent Role="Games">
+              <PropertyRef Name="GameLocation" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SaleReportDetails_SaleReports">
+          <End Role="SaleReports" Type="Self.SaleReports" Multiplicity="1" />
+          <End Role="SaleReportDetails" Type="Self.SaleReportDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SaleReports">
+              <PropertyRef Name="ReportID" />
+            </Principal>
+            <Dependent Role="SaleReportDetails">
+              <PropertyRef Name="ReportID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SaleReportDetails_Terminals">
+          <End Role="Terminals" Type="Self.Terminals" Multiplicity="1" />
+          <End Role="SaleReportDetails" Type="Self.SaleReportDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Terminals">
+              <PropertyRef Name="TerminalID" />
+            </Principal>
+            <Dependent Role="SaleReportDetails">
+              <PropertyRef Name="TerminalID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SaleReportDetails_Tickets">
+          <End Role="Tickets" Type="Self.Tickets" Multiplicity="1" />
+          <End Role="SaleReportDetails" Type="Self.SaleReportDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tickets">
+              <PropertyRef Name="TicketID" />
+            </Principal>
+            <Dependent Role="SaleReportDetails">
+              <PropertyRef Name="TicketID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SaleReports_Games">
+          <End Role="Games" Type="Self.Games" Multiplicity="1" />
+          <End Role="SaleReports" Type="Self.SaleReports" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Games">
+              <PropertyRef Name="GameID" />
+            </Principal>
+            <Dependent Role="SaleReports">
+              <PropertyRef Name="GameID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SaleReports_SaleReportStatuses">
+          <End Role="SaleReportStatuses" Type="Self.SaleReportStatuses" Multiplicity="1" />
+          <End Role="SaleReports" Type="Self.SaleReports" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SaleReportStatuses">
+              <PropertyRef Name="SaleReportStatusID" />
+            </Principal>
+            <Dependent Role="SaleReports">
+              <PropertyRef Name="Status" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Salesmen_Terminals">
+          <End Role="Terminals" Type="Self.Terminals" Multiplicity="1" />
+          <End Role="Salesmen" Type="Self.Salesmen" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Terminals">
+              <PropertyRef Name="TerminalID" />
+            </Principal>
+            <Dependent Role="Salesmen">
+              <PropertyRef Name="AssignedTerminal" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Terminals_Locations">
+          <End Role="Locations" Type="Self.Locations" Multiplicity="1" />
+          <End Role="Terminals" Type="Self.Terminals" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Locations">
+              <PropertyRef Name="LocationID" />
+            </Principal>
+            <Dependent Role="Terminals">
+              <PropertyRef Name="LocationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tickets_Locations">
+          <End Role="Locations" Type="Self.Locations" Multiplicity="1" />
+          <End Role="Tickets" Type="Self.Tickets" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Locations">
+              <PropertyRef Name="LocationID" />
+            </Principal>
+            <Dependent Role="Tickets">
+              <PropertyRef Name="TicketLocation" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="TASModelStoreContainer">
+          <EntitySet Name="Games" EntityType="Self.Games" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GameStatuses" EntityType="Self.GameStatuses" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Locations" EntityType="Self.Locations" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Roles" EntityType="Self.Roles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SaleReportDetails" EntityType="Self.SaleReportDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SaleReports" EntityType="Self.SaleReports" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SaleReportStatuses" EntityType="Self.SaleReportStatuses" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Salesmen" EntityType="Self.Salesmen" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Terminals" EntityType="Self.Terminals" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tickets" EntityType="Self.Tickets" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Games_GameStatuses" Association="Self.FK_Games_GameStatuses">
+            <End Role="GameStatuses" EntitySet="GameStatuses" />
+            <End Role="Games" EntitySet="Games" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Games_Locations" Association="Self.FK_Games_Locations">
+            <End Role="Locations" EntitySet="Locations" />
+            <End Role="Games" EntitySet="Games" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SaleReportDetails_SaleReports" Association="Self.FK_SaleReportDetails_SaleReports">
+            <End Role="SaleReports" EntitySet="SaleReports" />
+            <End Role="SaleReportDetails" EntitySet="SaleReportDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SaleReportDetails_Terminals" Association="Self.FK_SaleReportDetails_Terminals">
+            <End Role="Terminals" EntitySet="Terminals" />
+            <End Role="SaleReportDetails" EntitySet="SaleReportDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SaleReportDetails_Tickets" Association="Self.FK_SaleReportDetails_Tickets">
+            <End Role="Tickets" EntitySet="Tickets" />
+            <End Role="SaleReportDetails" EntitySet="SaleReportDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SaleReports_Games" Association="Self.FK_SaleReports_Games">
+            <End Role="Games" EntitySet="Games" />
+            <End Role="SaleReports" EntitySet="SaleReports" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SaleReports_SaleReportStatuses" Association="Self.FK_SaleReports_SaleReportStatuses">
+            <End Role="SaleReportStatuses" EntitySet="SaleReportStatuses" />
+            <End Role="SaleReports" EntitySet="SaleReports" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Salesmen_Terminals" Association="Self.FK_Salesmen_Terminals">
+            <End Role="Terminals" EntitySet="Terminals" />
+            <End Role="Salesmen" EntitySet="Salesmen" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Terminals_Locations" Association="Self.FK_Terminals_Locations">
+            <End Role="Locations" EntitySet="Locations" />
+            <End Role="Terminals" EntitySet="Terminals" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tickets_Locations" Association="Self.FK_Tickets_Locations">
+            <End Role="Locations" EntitySet="Locations" />
+            <End Role="Tickets" EntitySet="Tickets" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="TASModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Game">
+          <Key>
+            <PropertyRef Name="GameID" />
+          </Key>
+          <Property Name="GameID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="HomeClubName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="VisitorName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="GameDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="GameLocation" Type="Int32" Nullable="false" />
+          <Property Name="GameStatus" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="GameStatus1" Relationship="Self.FK_Games_GameStatuses" FromRole="Games" ToRole="GameStatuses" />
+          <NavigationProperty Name="Location" Relationship="Self.FK_Games_Locations" FromRole="Games" ToRole="Locations" />
+          <NavigationProperty Name="SaleReports" Relationship="Self.FK_SaleReports_Games" FromRole="Games" ToRole="SaleReports" />
+        </EntityType>
+        <EntityType Name="GameStatus">
+          <Key>
+            <PropertyRef Name="StatusID" />
+          </Key>
+          <Property Name="StatusID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StatusName" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Games" Relationship="Self.FK_Games_GameStatuses" FromRole="GameStatuses" ToRole="Games" />
+        </EntityType>
+        <EntityType Name="Location">
+          <Key>
+            <PropertyRef Name="LocationID" />
+          </Key>
+          <Property Name="LocationID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LocationName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="LocationStatus" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Games" Relationship="Self.FK_Games_Locations" FromRole="Locations" ToRole="Games" />
+          <NavigationProperty Name="Terminals" Relationship="Self.FK_Terminals_Locations" FromRole="Locations" ToRole="Terminals" />
+          <NavigationProperty Name="Tickets" Relationship="TASModel.FK_Tickets_Locations" FromRole="Location" ToRole="Ticket" />
+        </EntityType>
+        <EntityType Name="Role">
+          <Key>
+            <PropertyRef Name="RoleID" />
+          </Key>
+          <Property Name="RoleID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RoleName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Status" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SaleReportDetail">
+          <Key>
+            <PropertyRef Name="RowID" />
+          </Key>
+          <Property Name="RowID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ReportID" Type="Int32" Nullable="false" />
+          <Property Name="TerminalID" Type="Int32" Nullable="false" />
+          <Property Name="TicketID" Type="Int32" Nullable="false" />
+          <Property Name="TicketQty" Type="Int32" Nullable="false" />
+          <Property Name="TicketAmount" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <NavigationProperty Name="SaleReport" Relationship="Self.FK_SaleReportDetails_SaleReports" FromRole="SaleReportDetails" ToRole="SaleReports" />
+          <NavigationProperty Name="Terminal" Relationship="Self.FK_SaleReportDetails_Terminals" FromRole="SaleReportDetails" ToRole="Terminals" />
+          <NavigationProperty Name="Ticket" Relationship="TASModel.FK_SaleReportDetails_Tickets" FromRole="SaleReportDetail" ToRole="Ticket" />
+        </EntityType>
+        <EntityType Name="SaleReport">
+          <Key>
+            <PropertyRef Name="ReportID" />
+          </Key>
+          <Property Name="ReportID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ReportDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="GameID" Type="Int32" Nullable="false" />
+          <Property Name="Status" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Game" Relationship="Self.FK_SaleReports_Games" FromRole="SaleReports" ToRole="Games" />
+          <NavigationProperty Name="SaleReportDetails" Relationship="Self.FK_SaleReportDetails_SaleReports" FromRole="SaleReports" ToRole="SaleReportDetails" />
+          <NavigationProperty Name="SaleReportStatus" Relationship="Self.FK_SaleReports_SaleReportStatuses" FromRole="SaleReports" ToRole="SaleReportStatuses" />
+        </EntityType>
+        <EntityType Name="SaleReportStatus">
+          <Key>
+            <PropertyRef Name="SaleReportStatusID" />
+          </Key>
+          <Property Name="SaleReportStatusID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StatusName" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="SaleReports" Relationship="Self.FK_SaleReports_SaleReportStatuses" FromRole="SaleReportStatuses" ToRole="SaleReports" />
+        </EntityType>
+        <EntityType Name="Terminal">
+          <Key>
+            <PropertyRef Name="TerminalID" />
+          </Key>
+          <Property Name="TerminalID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LocationID" Type="Int32" Nullable="false" />
+          <Property Name="Status" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Location" Relationship="Self.FK_Terminals_Locations" FromRole="Terminals" ToRole="Locations" />
+          <NavigationProperty Name="SaleReportDetails" Relationship="Self.FK_SaleReportDetails_Terminals" FromRole="Terminals" ToRole="SaleReportDetails" />
+          <Property Name="UUID" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Salesmen" Relationship="TASModel.FK_Salesmen_Terminals" FromRole="Terminal" ToRole="Salesman" />
+        </EntityType>
+        <Association Name="FK_Games_GameStatuses">
+          <End Role="GameStatuses" Type="Self.GameStatus" Multiplicity="1" />
+          <End Role="Games" Type="Self.Game" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GameStatuses">
+              <PropertyRef Name="StatusID" />
+            </Principal>
+            <Dependent Role="Games">
+              <PropertyRef Name="GameStatus" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Games_Locations">
+          <End Role="Locations" Type="Self.Location" Multiplicity="1" />
+          <End Role="Games" Type="Self.Game" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Locations">
+              <PropertyRef Name="LocationID" />
+            </Principal>
+            <Dependent Role="Games">
+              <PropertyRef Name="GameLocation" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SaleReports_Games">
+          <End Role="Games" Type="Self.Game" Multiplicity="1" />
+          <End Role="SaleReports" Type="Self.SaleReport" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Games">
+              <PropertyRef Name="GameID" />
+            </Principal>
+            <Dependent Role="SaleReports">
+              <PropertyRef Name="GameID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Terminals_Locations">
+          <End Role="Locations" Type="Self.Location" Multiplicity="1" />
+          <End Role="Terminals" Type="Self.Terminal" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Locations">
+              <PropertyRef Name="LocationID" />
+            </Principal>
+            <Dependent Role="Terminals">
+              <PropertyRef Name="LocationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SaleReportDetails_SaleReports">
+          <End Role="SaleReports" Type="Self.SaleReport" Multiplicity="1" />
+          <End Role="SaleReportDetails" Type="Self.SaleReportDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SaleReports">
+              <PropertyRef Name="ReportID" />
+            </Principal>
+            <Dependent Role="SaleReportDetails">
+              <PropertyRef Name="ReportID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SaleReportDetails_Terminals">
+          <End Role="Terminals" Type="Self.Terminal" Multiplicity="1" />
+          <End Role="SaleReportDetails" Type="Self.SaleReportDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Terminals">
+              <PropertyRef Name="TerminalID" />
+            </Principal>
+            <Dependent Role="SaleReportDetails">
+              <PropertyRef Name="TerminalID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SaleReports_SaleReportStatuses">
+          <End Role="SaleReportStatuses" Type="Self.SaleReportStatus" Multiplicity="1" />
+          <End Role="SaleReports" Type="Self.SaleReport" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SaleReportStatuses">
+              <PropertyRef Name="SaleReportStatusID" />
+            </Principal>
+            <Dependent Role="SaleReports">
+              <PropertyRef Name="Status" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="TASEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Games" EntityType="Self.Game" />
+          <EntitySet Name="GameStatuses" EntityType="Self.GameStatus" />
+          <EntitySet Name="Locations" EntityType="Self.Location" />
+          <EntitySet Name="Roles" EntityType="Self.Role" />
+          <EntitySet Name="SaleReportDetails" EntityType="Self.SaleReportDetail" />
+          <EntitySet Name="SaleReports" EntityType="Self.SaleReport" />
+          <EntitySet Name="SaleReportStatuses" EntityType="Self.SaleReportStatus" />
+          <EntitySet Name="Terminals" EntityType="Self.Terminal" />
+          <AssociationSet Name="FK_Games_GameStatuses" Association="Self.FK_Games_GameStatuses">
+            <End Role="GameStatuses" EntitySet="GameStatuses" />
+            <End Role="Games" EntitySet="Games" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Games_Locations" Association="Self.FK_Games_Locations">
+            <End Role="Locations" EntitySet="Locations" />
+            <End Role="Games" EntitySet="Games" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SaleReports_Games" Association="Self.FK_SaleReports_Games">
+            <End Role="Games" EntitySet="Games" />
+            <End Role="SaleReports" EntitySet="SaleReports" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Terminals_Locations" Association="Self.FK_Terminals_Locations">
+            <End Role="Locations" EntitySet="Locations" />
+            <End Role="Terminals" EntitySet="Terminals" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SaleReportDetails_SaleReports" Association="Self.FK_SaleReportDetails_SaleReports">
+            <End Role="SaleReports" EntitySet="SaleReports" />
+            <End Role="SaleReportDetails" EntitySet="SaleReportDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SaleReportDetails_Terminals" Association="Self.FK_SaleReportDetails_Terminals">
+            <End Role="Terminals" EntitySet="Terminals" />
+            <End Role="SaleReportDetails" EntitySet="SaleReportDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SaleReports_SaleReportStatuses" Association="Self.FK_SaleReports_SaleReportStatuses">
+            <End Role="SaleReportStatuses" EntitySet="SaleReportStatuses" />
+            <End Role="SaleReports" EntitySet="SaleReports" />
+          </AssociationSet>
+          <EntitySet Name="Tickets" EntityType="TASModel.Ticket" />
+          <AssociationSet Name="FK_Tickets_Locations" Association="TASModel.FK_Tickets_Locations">
+            <End Role="Location" EntitySet="Locations" />
+            <End Role="Ticket" EntitySet="Tickets" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SaleReportDetails_Tickets" Association="TASModel.FK_SaleReportDetails_Tickets">
+            <End Role="Ticket" EntitySet="Tickets" />
+            <End Role="SaleReportDetail" EntitySet="SaleReportDetails" />
+          </AssociationSet>
+          <EntitySet Name="Salesmen" EntityType="TASModel.Salesman" />
+          <AssociationSet Name="FK_Salesmen_Terminals" Association="TASModel.FK_Salesmen_Terminals">
+            <End Role="Terminal" EntitySet="Terminals" />
+            <End Role="Salesman" EntitySet="Salesmen" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Ticket">
+          <Key>
+            <PropertyRef Name="TicketID" />
+          </Key>
+          <Property Name="TicketID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TicketLocation" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="Value" Type="Decimal" Nullable="false" Precision="19" Scale="4" />
+          <Property Name="Status" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Location" Relationship="TASModel.FK_Tickets_Locations" FromRole="Ticket" ToRole="Location" />
+          <NavigationProperty Name="SaleReportDetails" Relationship="TASModel.FK_SaleReportDetails_Tickets" FromRole="Ticket" ToRole="SaleReportDetail" />
+        </EntityType>
+        <Association Name="FK_Tickets_Locations">
+          <End Type="TASModel.Location" Role="Location" Multiplicity="1" />
+          <End Type="TASModel.Ticket" Role="Ticket" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Location">
+              <PropertyRef Name="LocationID" />
+            </Principal>
+            <Dependent Role="Ticket">
+              <PropertyRef Name="TicketLocation" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SaleReportDetails_Tickets">
+          <End Type="TASModel.Ticket" Role="Ticket" Multiplicity="1" />
+          <End Type="TASModel.SaleReportDetail" Role="SaleReportDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Ticket">
+              <PropertyRef Name="TicketID" />
+            </Principal>
+            <Dependent Role="SaleReportDetail">
+              <PropertyRef Name="TicketID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Salesman">
+          <Key>
+            <PropertyRef Name="SalesmanID" />
+          </Key>
+          <Property Name="SalesmanID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Password" Type="String" Nullable="false" MaxLength="90" FixedLength="false" Unicode="false" />
+          <Property Name="FirstName" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="LastName" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="AssignedTerminal" Type="Int32" Nullable="false" />
+          <Property Name="Status" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Terminal" Relationship="TASModel.FK_Salesmen_Terminals" FromRole="Salesman" ToRole="Terminal" />
+        </EntityType>
+        <Association Name="FK_Salesmen_Terminals">
+          <End Type="TASModel.Terminal" Role="Terminal" Multiplicity="1" />
+          <End Type="TASModel.Salesman" Role="Salesman" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Terminal">
+              <PropertyRef Name="TerminalID" />
+            </Principal>
+            <Dependent Role="Salesman">
+              <PropertyRef Name="AssignedTerminal" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="TASModelStoreContainer" CdmEntityContainer="TASEntities">
+          <EntitySetMapping Name="Games">
+            <EntityTypeMapping TypeName="TASModel.Game">
+              <MappingFragment StoreEntitySet="Games">
+                <ScalarProperty Name="GameID" ColumnName="GameID" />
+                <ScalarProperty Name="HomeClubName" ColumnName="HomeClubName" />
+                <ScalarProperty Name="VisitorName" ColumnName="VisitorName" />
+                <ScalarProperty Name="GameDate" ColumnName="GameDate" />
+                <ScalarProperty Name="GameLocation" ColumnName="GameLocation" />
+                <ScalarProperty Name="GameStatus" ColumnName="GameStatus" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GameStatuses">
+            <EntityTypeMapping TypeName="TASModel.GameStatus">
+              <MappingFragment StoreEntitySet="GameStatuses">
+                <ScalarProperty Name="StatusID" ColumnName="StatusID" />
+                <ScalarProperty Name="StatusName" ColumnName="StatusName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Locations">
+            <EntityTypeMapping TypeName="TASModel.Location">
+              <MappingFragment StoreEntitySet="Locations">
+                <ScalarProperty Name="LocationID" ColumnName="LocationID" />
+                <ScalarProperty Name="LocationName" ColumnName="LocationName" />
+                <ScalarProperty Name="LocationStatus" ColumnName="LocationStatus" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Roles">
+            <EntityTypeMapping TypeName="TASModel.Role">
+              <MappingFragment StoreEntitySet="Roles">
+                <ScalarProperty Name="RoleID" ColumnName="RoleID" />
+                <ScalarProperty Name="RoleName" ColumnName="RoleName" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SaleReportDetails">
+            <EntityTypeMapping TypeName="TASModel.SaleReportDetail">
+              <MappingFragment StoreEntitySet="SaleReportDetails">
+                <ScalarProperty Name="RowID" ColumnName="RowID" />
+                <ScalarProperty Name="ReportID" ColumnName="ReportID" />
+                <ScalarProperty Name="TerminalID" ColumnName="TerminalID" />
+                <ScalarProperty Name="TicketID" ColumnName="TicketID" />
+                <ScalarProperty Name="TicketQty" ColumnName="TicketQty" />
+                <ScalarProperty Name="TicketAmount" ColumnName="TicketAmount" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SaleReports">
+            <EntityTypeMapping TypeName="TASModel.SaleReport">
+              <MappingFragment StoreEntitySet="SaleReports">
+                <ScalarProperty Name="ReportID" ColumnName="ReportID" />
+                <ScalarProperty Name="ReportDate" ColumnName="ReportDate" />
+                <ScalarProperty Name="GameID" ColumnName="GameID" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SaleReportStatuses">
+            <EntityTypeMapping TypeName="TASModel.SaleReportStatus">
+              <MappingFragment StoreEntitySet="SaleReportStatuses">
+                <ScalarProperty Name="SaleReportStatusID" ColumnName="SaleReportStatusID" />
+                <ScalarProperty Name="StatusName" ColumnName="StatusName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Terminals">
+            <EntityTypeMapping TypeName="TASModel.Terminal">
+              <MappingFragment StoreEntitySet="Terminals">
+                <ScalarProperty Name="UUID" ColumnName="UUID" />
+                <ScalarProperty Name="TerminalID" ColumnName="TerminalID" />
+                <ScalarProperty Name="LocationID" ColumnName="LocationID" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tickets">
+            <EntityTypeMapping TypeName="TASModel.Ticket">
+              <MappingFragment StoreEntitySet="Tickets">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="TicketLocation" ColumnName="TicketLocation" />
+                <ScalarProperty Name="TicketID" ColumnName="TicketID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Salesmen">
+            <EntityTypeMapping TypeName="TASModel.Salesman">
+              <MappingFragment StoreEntitySet="Salesmen">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="AssignedTerminal" ColumnName="AssignedTerminal" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="SalesmanID" ColumnName="SalesmanID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

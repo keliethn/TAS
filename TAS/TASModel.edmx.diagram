@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="140d29ab987a463c83458feac742185b" Name="Diagram1">
+        <EntityTypeShape EntityType="TASModel.Game" Width="1.5" PointX="3" PointY="3.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="TASModel.GameStatus" Width="1.5" PointX="0.75" PointY="2.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="TASModel.Location" Width="1.5" PointX="0.75" PointY="5.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="TASModel.Role" Width="1.5" PointX="0.75" PointY="14.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="TASModel.SaleReportDetail" Width="1.5" PointX="7.5" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="TASModel.SaleReport" Width="1.5" PointX="5.25" PointY="3.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="TASModel.SaleReportStatus" Width="1.5" PointX="3" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="TASModel.Terminal" Width="1.5" PointX="3" PointY="7.25" IsExpanded="true" />
+        <AssociationConnector Association="TASModel.FK_Games_GameStatuses" ManuallyRouted="false" />
+        <AssociationConnector Association="TASModel.FK_Games_Locations" ManuallyRouted="false" />
+        <AssociationConnector Association="TASModel.FK_SaleReports_Games" ManuallyRouted="false" />
+        <AssociationConnector Association="TASModel.FK_Terminals_Locations" ManuallyRouted="false" />
+        <AssociationConnector Association="TASModel.FK_SaleReportDetails_SaleReports" ManuallyRouted="false" />
+        <AssociationConnector Association="TASModel.FK_SaleReportDetails_Terminals" ManuallyRouted="false" />
+        <AssociationConnector Association="TASModel.FK_SaleReports_SaleReportStatuses" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="TASModel.Ticket" Width="1.5" PointX="3" PointY="10.375" />
+        <AssociationConnector Association="TASModel.FK_Tickets_Locations" />
+        <AssociationConnector Association="TASModel.FK_SaleReportDetails_Tickets" />
+        <EntityTypeShape EntityType="TASModel.Salesman" Width="1.5" PointX="5.25" PointY="7.125" />
+        <AssociationConnector Association="TASModel.FK_Salesmen_Terminals" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
