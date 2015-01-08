@@ -1,0 +1,59 @@
+﻿@model TASweb.Models.Game
+
+@{
+    ViewBag.Title = "Detalles";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Detalles</h2>
+
+<div>
+    <h4>Juego</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.HomeClubName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HomeClubName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.VisitorName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.VisitorName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.GameDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.GameDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.GameStatus1.StatusName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.GameStatus1.StatusName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Location.LocationName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Location.LocationName)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Editar", "Edit", new { id = Model.GameID }) |
+    @Html.ActionLink("Regresar", "Index")
+</p>

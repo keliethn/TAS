@@ -1,0 +1,65 @@
+﻿@model TASweb.Models.Game
+
+@{
+    ViewBag.Title = "Eliminar";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Eliminar</h2>
+
+<h3>Esta seguro de eliminar esto?</h3>
+<div>
+    <h4>Juego</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.HomeClubName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HomeClubName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.VisitorName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.VisitorName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.GameDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.GameDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.GameStatus1.StatusName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.GameStatus1.StatusName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Location.LocationName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Location.LocationName)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Eliminar" class="btn btn-default" /> |
+            @Html.ActionLink("Regresar", "Index")
+        </div>
+    }
+</div>

@@ -15,6 +15,7 @@ namespace TAS
     public partial class Salesman
     {
         public int SalesmanID { get; set; }
+        public Nullable<int> CompanyID { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
         public string FirstName { get; set; }
@@ -22,6 +23,7 @@ namespace TAS
         public int AssignedTerminal { get; set; }
         public bool Status { get; set; }
     
+        public virtual Company Company { get; set; }
         public virtual Terminal Terminal { get; set; }
     }
 }

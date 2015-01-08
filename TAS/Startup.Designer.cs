@@ -58,7 +58,6 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.button12 = new System.Windows.Forms.Button();
-            this.button13 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.statusStrip1.SuspendLayout();
             this.loginPanel.SuspendLayout();
@@ -365,19 +364,6 @@
             this.button12.UseVisualStyleBackColor = false;
             this.button12.Click += new System.EventHandler(this.button12_Click);
             // 
-            // button13
-            // 
-            this.button13.BackColor = System.Drawing.Color.Orange;
-            this.button13.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button13.Font = new System.Drawing.Font("Arial", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button13.ForeColor = System.Drawing.Color.White;
-            this.button13.Location = new System.Drawing.Point(362, 397);
-            this.button13.Name = "button13";
-            this.button13.Size = new System.Drawing.Size(197, 85);
-            this.button13.TabIndex = 11;
-            this.button13.Text = "CONFIGURACION MANUAL";
-            this.button13.UseVisualStyleBackColor = false;
-            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -395,7 +381,6 @@
             this.BackColor = System.Drawing.SystemColors.Window;
             this.ClientSize = new System.Drawing.Size(958, 512);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.button13);
             this.Controls.Add(this.button12);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.loginPanel);
@@ -449,7 +434,6 @@
         private System.Windows.Forms.Button button10;
         private System.Windows.Forms.Label usr_lbl;
         private System.Windows.Forms.Button button12;
-        private System.Windows.Forms.Button button13;
         private System.Windows.Forms.Label label1;
     }
 }

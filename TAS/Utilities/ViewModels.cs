@@ -9,6 +9,7 @@ namespace TAS.Utilities
     class StationConfig
     {
         public string UUID { get; set; }
+        public string TicketSerie { get; set; }
         public string LocationName { get; set; }
         public bool Status { get; set; }
     }
@@ -32,6 +33,7 @@ namespace TAS.Utilities
     {
         public string LocationName { get; set; }
         public string LocationPrice { get; set; }
+        public int Seed { get; set; }
     }
 
     class CashCount
@@ -43,6 +45,7 @@ namespace TAS.Utilities
 
     class Games
     {
+        public int GameID { get; set; }
         public string HomeClub { get; set; }
         public string Visitor { get; set; }
         public string GameDate { get; set; }

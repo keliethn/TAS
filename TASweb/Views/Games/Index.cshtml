@@ -1,0 +1,66 @@
+﻿@model IEnumerable<TASweb.Models.Game>
+
+@{
+    ViewBag.Title = "Inicio";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<p>
+    @Html.ActionLink("Agregar juego", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.HomeClubName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.VisitorName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.GameDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.GameStatus1.StatusName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Location.LocationName)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.HomeClubName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.VisitorName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.GameDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.GameStatus1.StatusName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Location.LocationName)
+            </td>
+            <td>
+                @{
+    if (item.GameStatus == 5)
+    {
+        @Html.ActionLink("Reporte de Venta", "Details", "SaleReports", new { id = item.GameID });
+    }
+    else
+    {
+        @Html.ActionLink("Editar", "Edit", new { id=item.GameID });
+        @Html.ActionLink("Reporte de Venta","Details","SaleReports",new{id=item.GameID});
+        @Html.ActionLink("Eliminar", "Delete", new { id = item.GameID });
+    }
+                }
+
+            </td>
+        </tr>
+}
+
+</table>

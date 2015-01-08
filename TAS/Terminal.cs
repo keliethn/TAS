@@ -21,9 +21,12 @@ namespace TAS
         }
     
         public int TerminalID { get; set; }
-        public int LocationID { get; set; }
-        public bool Status { get; set; }
         public string UUID { get; set; }
+        public string TicketSerie { get; set; }
+        public int LocationID { get; set; }
+        public int CompanyID { get; set; }
+        public bool ShiftStatus { get; set; }
+        public bool Status { get; set; }
     
         public virtual Location Location { get; set; }
         public virtual ICollection<SaleReportDetail> SaleReportDetails { get; set; }

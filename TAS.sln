@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TAS", "TAS\TAS.csproj", "{728ECD78-C8FA-4A47-A2DD-DD9F8B4A589C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TASweb", "TASweb\TASweb.csproj", "{48EDA4F0-0CE3-40B1-97A3-D783E18B73CF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{728ECD78-C8FA-4A47-A2DD-DD9F8B4A589C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{728ECD78-C8FA-4A47-A2DD-DD9F8B4A589C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{728ECD78-C8FA-4A47-A2DD-DD9F8B4A589C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48EDA4F0-0CE3-40B1-97A3-D783E18B73CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48EDA4F0-0CE3-40B1-97A3-D783E18B73CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48EDA4F0-0CE3-40B1-97A3-D783E18B73CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48EDA4F0-0CE3-40B1-97A3-D783E18B73CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,9 +1,13 @@
-﻿using System;
+﻿using Media.res;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -16,6 +20,9 @@ namespace TAS
     {
         string salesman_username;
         string salesman_fullname;
+        private const string AuthToken = "HRpIjHRpIj120iKN";
+        private const string pass_phrase = "Tong888Neat421";
+        private const int key_size = 64;
         public LockScreen(string fullname, string username)
         {
             InitializeComponent();
@@ -95,10 +102,11 @@ namespace TAS
         private void button10_Click(object sender, EventArgs e)
         {
             TASEntities db = new TASEntities();
-            string password = txt_pwd.Text;
+            string plain_password = txt_pwd.Text;
+            string encrypted_pass = EncryptThis(plain_password);
             if (CheckForInternetConnection())
             {
-                Salesman salesman_finder = db.Salesmen.FirstOrDefault(salesman_entity => salesman_entity.UserName == salesman_username && salesman_entity.Password == password);
+                Salesman salesman_finder = db.Salesmen.FirstOrDefault(salesman_entity => salesman_entity.UserName == salesman_username && salesman_entity.Password == encrypted_pass);
                 if (salesman_finder != null)
                 {
                     this.Close();
@@ -122,7 +130,7 @@ namespace TAS
                             Status = Convert.ToBoolean(salesmen.Element("Status").Value)
 
                         };
-                int isRegistered = salesmen_list.Where(salesman_entity => salesman_entity.UserName == salesman_username && salesman_entity.Password == password).Count();
+                int isRegistered = salesmen_list.Where(salesman_entity => salesman_entity.UserName == salesman_username && salesman_entity.Password == encrypted_pass).Count();
                 if (isRegistered > 0)
                 {
                     this.Close();
@@ -137,19 +145,19 @@ namespace TAS
 
         private static bool CheckForInternetConnection()
         {
-            return true;
-            //try
-            //{
-            //    using (var client = new WebClient())
-            //    using (var stream = client.OpenRead(Resources.PingURL))
-            //    {
-            //        return true;
-            //    }
-            //}
-            //catch
-            //{
-            //    return false;
-            //}
+            //return true;
+            try
+            {
+                using (var client = new WebClient())
+                using (var stream = client.OpenRead(Resources.PingURL))
+                {
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         private void LockScreen_Load(object sender, EventArgs e)
@@ -157,6 +165,44 @@ namespace TAS
             usr_lbl.Text = salesman_username;
             lbl_salesman_fullname.Text = salesman_fullname;
 
+        }
+        private string EncryptThis(string plain_text)
+        {
+            byte[] init_vector_bytes = Encoding.UTF8.GetBytes(AuthToken);
+            byte[] plain_text_bytes = Encoding.UTF8.GetBytes(plain_text);
+            PasswordDeriveBytes password = new PasswordDeriveBytes(pass_phrase, null);
+            byte[] key_bytes = password.GetBytes(key_size / 8);
+            RijndaelManaged symmetric_key = new RijndaelManaged();
+            symmetric_key.Mode = CipherMode.CBC;
+            symmetric_key.Padding = PaddingMode.PKCS7;
+            ICryptoTransform encryptor = symmetric_key.CreateEncryptor(key_bytes, init_vector_bytes);
+            MemoryStream memory_stream = new MemoryStream();
+            CryptoStream crypto_stream = new CryptoStream(memory_stream, encryptor, CryptoStreamMode.Write);
+            crypto_stream.Write(plain_text_bytes, 0, plain_text_bytes.Length);
+            crypto_stream.FlushFinalBlock();
+            byte[] cipher_text_bytes = memory_stream.ToArray();
+            memory_stream.Close();
+            crypto_stream.Close();
+            return Convert.ToBase64String(cipher_text_bytes);
+        }
+
+        public string DecryptThis(string cipher_text)
+        {
+            byte[] init_vector_bytes = Encoding.UTF8.GetBytes(AuthToken);
+            byte[] cipher_text_bytes = Encoding.UTF8.GetBytes(cipher_text);
+            PasswordDeriveBytes password = new PasswordDeriveBytes(pass_phrase, null);
+            byte[] key_bytes = password.GetBytes(key_size / 8);
+            RijndaelManaged symmetric_key = new RijndaelManaged();
+            symmetric_key.Mode = CipherMode.CBC;
+            symmetric_key.Padding = PaddingMode.PKCS7;
+            ICryptoTransform decryptor = symmetric_key.CreateDecryptor(key_bytes, init_vector_bytes);
+            MemoryStream memory_stream = new MemoryStream();
+            CryptoStream crypto_stream = new CryptoStream(memory_stream, decryptor, CryptoStreamMode.Read);
+            byte[] plain_text_bytes = new byte[cipher_text_bytes.Length];
+            int decrypted_byte_count = crypto_stream.Read(plain_text_bytes, 0, plain_text_bytes.Length);
+            memory_stream.Close();
+            crypto_stream.Close();
+            return Encoding.UTF8.GetString(plain_text_bytes, 0, decrypted_byte_count);
         }
     }
 }

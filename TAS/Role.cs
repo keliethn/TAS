@@ -14,8 +14,15 @@ namespace TAS
     
     public partial class Role
     {
+        public Role()
+        {
+            this.Users = new HashSet<User>();
+        }
+    
         public int RoleID { get; set; }
         public string RoleName { get; set; }
         public bool Status { get; set; }
+    
+        public virtual ICollection<User> Users { get; set; }
     }
 }

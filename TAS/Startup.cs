@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Management;
 using System.Net;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -20,6 +21,9 @@ namespace TAS
 {
     public partial class Startup : Form
     {
+        private const string AuthToken = "HRpIjHRpIj120iKN";
+        private const string pass_phrase = "Tong888Neat421";
+        private const int key_size = 64;
         public Startup()
         {
             InitializeComponent();
@@ -53,7 +57,7 @@ namespace TAS
                     station_writer.WriteStartElement("Station");
                     foreach (var item in terminal_data)
                     {
-                        createStationNode(item.UUID, item.Location.LocationName, item.Status, station_writer);
+                        createStationNode(item.TicketSerie,item.UUID, item.Location.LocationName, item.Status, station_writer);
                     }
                     station_writer.WriteEndElement();
                     station_writer.WriteEndDocument();
@@ -131,7 +135,7 @@ namespace TAS
                         game_writer.WriteStartElement("Game");
                         foreach (var item in loaded_game)
                         {
-                            createGameNode(item.HomeClubName, item.VisitorName, item.GameDate, item.Location.LocationName, game_writer);
+                            createGameNode(item.GameID,item.HomeClubName, item.VisitorName, item.GameDate, item.Location.LocationName, game_writer);
                         }
                         game_writer.WriteEndElement();
                         game_writer.WriteEndDocument();
@@ -342,22 +346,22 @@ namespace TAS
 
         private static bool CheckForInternetConnection()
         {
-            return true;
-            //try
-            //{
-            //    using (var client = new WebClient())
-            //    using (var stream = client.OpenRead(Resources.PingURL))
-            //    {
-            //        return true;
-            //    }
-            //}
-            //catch
-            //{
-            //    return false;
-            //}
+           // return true;
+            try
+            {
+                using (var client = new WebClient())
+                using (var stream = client.OpenRead(Resources.PingURL))
+                {
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
+            }
         }
 
-        private void createStationNode(string UUID, string LocationName, bool Status, XmlTextWriter station_writer)
+        private void createStationNode(string TicketSerie,string UUID, string LocationName, bool Status, XmlTextWriter station_writer)
         {
             station_writer.WriteStartElement("UUID");
             station_writer.WriteString(UUID);
@@ -367,6 +371,9 @@ namespace TAS
             station_writer.WriteEndElement();
             station_writer.WriteStartElement("Status");
             station_writer.WriteString(Convert.ToString(Status));
+            station_writer.WriteEndElement();
+            station_writer.WriteStartElement("TicketSerie");
+            station_writer.WriteString(TicketSerie);
             station_writer.WriteEndElement();
 
         }
@@ -378,6 +385,9 @@ namespace TAS
             ticket_writer.WriteEndElement();
             ticket_writer.WriteStartElement("Value");
             ticket_writer.WriteString(Convert.ToString(Value));
+            ticket_writer.WriteEndElement();
+            ticket_writer.WriteStartElement("Seed");
+            ticket_writer.WriteString("0");
             ticket_writer.WriteEndElement();
             ticket_writer.WriteStartElement("Status");
             ticket_writer.WriteString(Convert.ToString(Status));
@@ -422,8 +432,11 @@ namespace TAS
             cashcount_writer.WriteEndElement();
 
         }
-        private void createGameNode(string HomeClub, string Visitor, DateTime GameDate, string GamePlace, XmlTextWriter game_writer)
+        private void createGameNode(int GameID,string HomeClub, string Visitor, DateTime GameDate, string GamePlace, XmlTextWriter game_writer)
         {
+            game_writer.WriteStartElement("GameID");
+            game_writer.WriteString(Convert.ToString(GameID));
+            game_writer.WriteEndElement();
             game_writer.WriteStartElement("HomeClub");
             game_writer.WriteString(HomeClub);
             game_writer.WriteEndElement();
@@ -529,10 +542,11 @@ namespace TAS
         {
             TASEntities db = new TASEntities();
             string username = salesman_username.Text.Substring(5);
-            string password = txt_pwd.Text;
+            string plain_password = txt_pwd.Text;
+            string encrypted_pass = EncryptThis(plain_password);
             if (CheckForInternetConnection())
             {
-                Salesman salesman_finder = db.Salesmen.FirstOrDefault(salesman_entity => salesman_entity.UserName == username && salesman_entity.Password == password);
+                Salesman salesman_finder = db.Salesmen.FirstOrDefault(salesman_entity => salesman_entity.UserName == username && salesman_entity.Password == encrypted_pass);
                 if (salesman_finder != null)
                 {
                     StartupCash startup_cash = new StartupCash(salesman_finder.FirstName+" "+salesman_finder.LastName,salesman_finder.UserName);
@@ -541,7 +555,7 @@ namespace TAS
                 }
                 else
                 {
-                    MessageBox.Show("VENDEOR NO ENCONTRADO. Verifique su contraseña");
+                    MessageBox.Show("VENDEDOR NO ENCONTRADO. Verifique su contraseña");
                 }
             }
             else
@@ -558,7 +572,7 @@ namespace TAS
                             Status = Convert.ToBoolean(salesmen.Element("Status").Value)
 
                         };
-                int isRegistered=salesmen_list.Where(salesman_entity => salesman_entity.UserName == username && salesman_entity.Password == password).Count();
+                int isRegistered=salesmen_list.Where(salesman_entity => salesman_entity.UserName == username && salesman_entity.Password == encrypted_pass).Count();
                 if (isRegistered > 0)
                 {
                     StartupCash startup_cash = new StartupCash(salesmen_list.First().FirstName + " " + salesmen_list.First().LastName, salesmen_list.First().UserName);
@@ -567,10 +581,49 @@ namespace TAS
                 }
                 else
                 {
-                    MessageBox.Show("VENDEOR NO ENCONTRADO. Verifique su contraseña");
+                    MessageBox.Show("VENDEDOR NO ENCONTRADO. Verifique su contraseña");
                 }
                 
             }
+        }
+
+        private string EncryptThis(string plain_text)
+        {
+            byte[] init_vector_bytes = Encoding.UTF8.GetBytes(AuthToken);
+            byte[] plain_text_bytes = Encoding.UTF8.GetBytes(plain_text);
+            PasswordDeriveBytes password = new PasswordDeriveBytes(pass_phrase, null);
+            byte[] key_bytes = password.GetBytes(key_size / 8);
+            RijndaelManaged symmetric_key = new RijndaelManaged();
+            symmetric_key.Mode = CipherMode.CBC;
+            symmetric_key.Padding = PaddingMode.PKCS7;
+            ICryptoTransform encryptor = symmetric_key.CreateEncryptor(key_bytes, init_vector_bytes);
+            MemoryStream memory_stream = new MemoryStream();
+            CryptoStream crypto_stream = new CryptoStream(memory_stream, encryptor, CryptoStreamMode.Write);
+            crypto_stream.Write(plain_text_bytes, 0, plain_text_bytes.Length);
+            crypto_stream.FlushFinalBlock();
+            byte[] cipher_text_bytes = memory_stream.ToArray();
+            memory_stream.Close();
+            crypto_stream.Close();
+            return Convert.ToBase64String(cipher_text_bytes);
+        }
+
+        public string DecryptThis(string cipher_text)
+        {
+            byte[] init_vector_bytes = Encoding.UTF8.GetBytes(AuthToken);
+            byte[] cipher_text_bytes = Encoding.UTF8.GetBytes(cipher_text);
+            PasswordDeriveBytes password = new PasswordDeriveBytes(pass_phrase, null);
+            byte[] key_bytes = password.GetBytes(key_size / 8);
+            RijndaelManaged symmetric_key = new RijndaelManaged();
+            symmetric_key.Mode = CipherMode.CBC;
+            symmetric_key.Padding = PaddingMode.PKCS7;
+            ICryptoTransform decryptor = symmetric_key.CreateDecryptor(key_bytes, init_vector_bytes);
+            MemoryStream memory_stream = new MemoryStream();
+            CryptoStream crypto_stream = new CryptoStream(memory_stream, decryptor, CryptoStreamMode.Read);
+            byte[] plain_text_bytes = new byte[cipher_text_bytes.Length];
+            int decrypted_byte_count = crypto_stream.Read(plain_text_bytes, 0, plain_text_bytes.Length);
+            memory_stream.Close();
+            crypto_stream.Close();
+            return Encoding.UTF8.GetString(plain_text_bytes, 0, decrypted_byte_count);
         }
     }
 }

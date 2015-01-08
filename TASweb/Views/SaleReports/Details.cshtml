@@ -1,0 +1,43 @@
+﻿@model TASweb.Models.SaleReport
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>SaleReport</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ReportDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ReportDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Game.HomeClubName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Game.HomeClubName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SaleReportStatus.StatusName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SaleReportStatus.StatusName)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ReportID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

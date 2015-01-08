@@ -25,6 +25,7 @@ namespace TAS
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<Company> Companies { get; set; }
         public virtual DbSet<Game> Games { get; set; }
         public virtual DbSet<GameStatus> GameStatuses { get; set; }
         public virtual DbSet<Location> Locations { get; set; }
@@ -32,8 +33,9 @@ namespace TAS
         public virtual DbSet<SaleReportDetail> SaleReportDetails { get; set; }
         public virtual DbSet<SaleReport> SaleReports { get; set; }
         public virtual DbSet<SaleReportStatus> SaleReportStatuses { get; set; }
+        public virtual DbSet<Salesman> Salesmen { get; set; }
         public virtual DbSet<Terminal> Terminals { get; set; }
         public virtual DbSet<Ticket> Tickets { get; set; }
-        public virtual DbSet<Salesman> Salesmen { get; set; }
+        public virtual DbSet<User> Users { get; set; }
     }
 }

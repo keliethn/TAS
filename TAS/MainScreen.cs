@@ -3,9 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.Entity;
 using System.Drawing;
 using System.Drawing.Printing;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -208,7 +210,7 @@ namespace TAS
 
         private void pay_tickets_Click(object sender, EventArgs e)
         {
-            Payment payment_form = new Payment(due_amount.Text, listBox1);
+            Payment payment_form = new Payment(due_amount.Text, sm_usrname, listBox1);
             payment_form.FormClosed += new FormClosedEventHandler(child_FormClosed); //add handler to catch when child form is closed  
             payment_form.ShowDialog(this);
         }
@@ -317,13 +319,58 @@ namespace TAS
                     return;
                     break;
                 default:
-                        PrintDialog printDialog = new PrintDialog();
-                        PrintDocument printDocument = new PrintDocument();
-                        //add the document to the dialog box... 
-                        printDialog.Document = printDocument;
-                        //add an event handler that will do the printing
-                        printDocument.PrintPage += new System.Drawing.Printing.PrintPageEventHandler(CreateCashCountReport);
-                        printDocument.Print();
+                    string station_id = null;
+                    XDocument stationDoc = XDocument.Load("Station.config");
+                    var station_list =
+                            from station1 in stationDoc.Descendants("Station")
+                            select new StationConfig
+                            {
+                                UUID = station1.Element("UUID").Value
+                            };
+                    station_list.ToList<StationConfig>();
+                    foreach (var item in station_list)
+                    {
+                        station_id = item.UUID;
+                    }
+                    if (CheckForInternetConnection())
+                    {
+                        TASEntities db = new TASEntities();
+
+
+                        try
+                        {
+                            Terminal selected_terminal = db.Terminals.FirstOrDefault(t => t.UUID == station_id);
+                            selected_terminal.Status = false;
+                            db.Entry(selected_terminal).State = EntityState.Modified;
+                            db.SaveChanges();
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(Convert.ToString(ex.InnerException));
+                        }
+                    }
+                    else
+                    {
+                        XDocument stationDoc2 = XDocument.Load("Station.config");
+                        var station_list2 =
+                                from station2 in stationDoc2.Descendants("Station")
+                                where station2.Element("UUID").Value == station_id
+                                select station2;
+                        foreach (var station_item2 in station_list2)
+                        {
+
+                            station_item2.Element("Status").Value = Convert.ToString(false);
+                          
+                        }
+                        stationDoc2.Save("Station.config");
+                    }
+                    PrintDialog printDialog = new PrintDialog();
+                    PrintDocument printDocument = new PrintDocument();
+                    //add the document to the dialog box... 
+                    printDialog.Document = printDocument;
+                    //add an event handler that will do the printing
+                    printDocument.PrintPage += new System.Drawing.Printing.PrintPageEventHandler(CreateCashCountReport);
+                    printDocument.Print();
                     Application.Exit();
                     break;
             }
@@ -361,7 +408,7 @@ namespace TAS
 
         private void pay_tickets_Click_1(object sender, EventArgs e)
         {
-            Payment payment_form = new Payment(due_amount.Text, listBox1);
+            Payment payment_form = new Payment(due_amount.Text, sm_usrname, listBox1);
             payment_form.FormClosed += new FormClosedEventHandler(child_FormClosed); //add handler to catch when child form is closed  
             payment_form.ShowDialog(this);
         }
@@ -478,9 +525,9 @@ namespace TAS
             graphic.DrawString("2015", new Font("Courier New", 7), new SolidBrush(Color.Black), 147, 124);
 
             Font font = new Font("Courier New", 10); //must use a mono spaced font as the spaces need to line up
-            string top = "Cant.".PadRight(10) + "Localidad".PadRight(15)+"Subtotal";
+            string top = "Cant.".PadRight(10) + "Localidad".PadRight(15) + "Subtotal";
             graphic.DrawString(top, font, new SolidBrush(Color.Black), 10, 138);
-            
+
             graphic.DrawString("----------------------------------", font, new SolidBrush(Color.Black), 10, 148);
             decimal totalprice = 0;
             int offset_list = 160;
@@ -497,21 +544,37 @@ namespace TAS
             foreach (var item in cash_list)
             {
                 //create the string to print on the reciept
-               
-                string productLine =Convert.ToString(item.Count).PadRight(10)+Convert.ToString(item.LocationName).PadRight(15)+"C$ "+Convert.ToString(item.Subtotal);
+
+                string productLine = Convert.ToString(item.Count).PadRight(10) + Convert.ToString(item.LocationName).PadRight(15) + "C$ " + Convert.ToString(item.Subtotal);
                 graphic.DrawString(productLine, new Font("Courier New", 10, FontStyle.Regular), new SolidBrush(Color.Black), 10, offset_list);
                 offset_list += 15;
-                totalprice += item.Subtotal ;
+                totalprice += item.Subtotal;
 
             }
 
-            graphic.DrawString("C$ "+Convert.ToString(totalprice), new Font("Courier New", 10), new SolidBrush(Color.Black), 225, offset_list+20);
+            graphic.DrawString("C$ " + Convert.ToString(totalprice), new Font("Courier New", 10), new SolidBrush(Color.Black), 225, offset_list + 20);
 
             graphic.DrawString("Fecha de impresión", new Font("Courier New", 6), new SolidBrush(Color.Black), 20, 340);
             graphic.DrawString(short_date + "  " + short_time, new Font("Courier New", 6), new SolidBrush(Color.Black), 20, 347);
             graphic.DrawString("Terminal: " + Constants.station_id, new Font("Courier New", 6), new SolidBrush(Color.Black), 20, 354);
 
-            
+
+        }
+        private static bool CheckForInternetConnection()
+        {
+            // return true;
+            try
+            {
+                using (var client = new WebClient())
+                using (var stream = client.OpenRead(Resources.PingURL))
+                {
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }
